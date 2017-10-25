@@ -1,0 +1,37 @@
+1.Add jar file
+------------------------------------------------------------------------------------------	
+ADD JAR /home/orienit/Work/JarFiles/hivexmlserde-1.0.5.1.jar;
+
+
+2.Create a table
+------------------------------------------------------------------------------------------
+CREATE TABLE kalyan.student1_xml(name string, id bigint, course string, year bigint)
+ROW FORMAT SERDE 'com.ibm.spss.hive.serde2.xml.XmlSerDe'
+WITH SERDEPROPERTIES (
+"column.xpath.name"="/student/name/text()",
+"column.xpath.id"="/student/id/text()",
+"column.xpath.course"="/student/course/text()",
+"column.xpath.year"="/student/year/text()"
+)
+STORED AS 
+INPUTFORMAT 'com.ibm.spss.hive.serde2.xml.XmlInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat'
+TBLPROPERTIES (
+"xmlinput.start"="<student>",
+"xmlinput.end"="</student>"
+);
+
+
+3.Load the data
+------------------------------------------------------------------------------------------
+LOAD DATA LOCAL INPATH '/home/orienit/Work/InputFiles/hive/student1.xml' INTO TABLE student1_xml;
+
+
+4.Create a table to store the output
+------------------------------------------------------------------------------------------
+CREATE TABLE kalyan.student1_xml_op(name string, id int, course string, year int);
+
+
+5.Insert the result into output table
+------------------------------------------------------------------------------------------
+INSERT INTO TABLE kalyan.student1_xml_op SELECT * FROM kalyan.student1_xml WHERE id > 2 and course = 'spark';

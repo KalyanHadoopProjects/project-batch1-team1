@@ -1,0 +1,24 @@
+1.Add jar file
+------------------------------------------------------------------------------------------
+add jar /home/orienit/Work/JarFiles/hive-serdes-1.0-SNAPSHOT.jar;
+
+
+2.Create a table
+------------------------------------------------------------------------------------------
+CREATE TABLE kalyan.student2_json(name string, id int, course string, year int)
+ROW FORMAT SERDE 'com.cloudera.hive.serde.JSONSerDe';
+
+
+3.Load the data
+------------------------------------------------------------------------------------------
+LOAD DATA LOCAL INPATH '/home/orienit/Work/InputFiles/hive/student2.json' INTO TABLE student2_json;
+
+
+4.Create a table to store the output
+------------------------------------------------------------------------------------------
+CREATE TABLE kalyan.student2_json_op like kalyan.student2_json;
+
+
+5.Insert the result into output table
+------------------------------------------------------------------------------------------
+INSERT INTO TABLE kalyan.student2_json_op SELECT * FROM student2_json WHERE id > 2 or course = 'spark';
